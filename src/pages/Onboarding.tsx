@@ -71,7 +71,7 @@ const Onboarding = () => {
             <CardTitle className="text-2xl">
               {currentStep === 1 ? 'Como você pretende usar o Thursday?' : 'Quantas pessoas vão contribuir?'}
             </CardTitle>
-            <CardDescription className="text-base">
+            <CardDescription className="text-base ">
               {currentStep === 1 
                 ? 'Isso nos ajuda a personalizar sua experiência' 
                 : 'Vamos configurar o tamanho ideal da sua equipe'
@@ -83,7 +83,7 @@ const Onboarding = () => {
             {currentStep === 1 && (
               <RadioGroup value={answers.purpose} onValueChange={handlePurposeChange} className="space-y-3">
                 {purposes.map((purpose) => (
-                  <div key={purpose.value} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <div key={purpose.value} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-70 cursor-pointer">
                     <RadioGroupItem value={purpose.value} id={purpose.value} />
                     <Label htmlFor={purpose.value} className="flex items-center space-x-3 cursor-pointer flex-1">
                       <div className="text-blue-600">
@@ -99,7 +99,7 @@ const Onboarding = () => {
             {currentStep === 2 && (
               <RadioGroup value={answers.teamSize} onValueChange={handleTeamSizeChange} className="space-y-3">
                 {teamSizes.map((size) => (
-                  <div key={size.value} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <div key={size.value} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-70 cursor-pointer">
                     <RadioGroupItem value={size.value} id={size.value} />
                     <Label htmlFor={size.value} className="cursor-pointer flex-1">
                       <span className="text-base">{size.label}</span>
