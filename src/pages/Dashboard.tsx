@@ -30,6 +30,8 @@ import ProjectSearch from '@/components/ProjectSearch';
 import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import HelpDialog from '@/components/HelpDialog';
 import ThemeToggle from '@/components/ThemeToggle';
+import emailjs from '@emailjs/browser';
+
 
 interface Project {
   id: string;
@@ -133,7 +135,7 @@ const Dashboard = () => {
     }
   });
 
-  // Fix NaN% calculation
+  // Fix NaN% 
   const getProgressPercentage = (completed: number, total: number) => {
     if (total === 0) return 0;
     return Math.round((completed / total) * 100);
@@ -270,18 +272,26 @@ const Dashboard = () => {
               <h1 className="text-lg font-semibold truncate">{currentCompany.name}</h1>
             </div>
             <div className="flex gap-1">
+              {/* mudar o tema Dark/Light */}
               <ThemeToggle />
               <HelpDialog trigger={
                 <Button variant="outline" size="sm">
                   <CircleHelp className="h-4 w-4" />
                 </Button>
               } />
+              {/* Convidar */}
               <Button onClick={() => setIsInviteOpen(true)} variant="outline" size="sm">
                 <Users className="h-4 w-4" />
               </Button>
-              <Button onClick={() => setIsCreateProjectOpen(true)} size="sm" className="px-2">
-                <Plus className="h-4 w-4" />
-              </Button>
+
+              <CreateProjectDialog onCreateProject={handleCreateProject}/>
+
+
+              {/* botão de criar novo projeto reduzido */}
+              {/* <Button className="bg-blue-600 hover:bg-blue-700">
+          <Plus className="h-4 w-4 mr-2" />
+          New
+        </Button> */}
             </div>
           </header>
 
@@ -301,10 +311,11 @@ const Dashboard = () => {
                   <Users className="h-4 w-4 mr-2" />
                   Convidar
                 </Button>
-                <Button onClick={() => setIsCreateProjectOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Projeto
-                </Button>
+                
+                {/* <Button onClick={() => setIsCreateProjectOpen(true)}>
+                  <Plus className="h-4 w-3 mr-2" />
+                  New
+                </Button> */}
               </div>
             </div>
 
@@ -422,14 +433,14 @@ const Dashboard = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
+                              {/* <DropdownMenuItem>
                                 <Eye className="mr-2 h-4 w-4" />
                                 Visualizar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              </DropdownMenuItem> */}
+                              {/* <DropdownMenuItem>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
-                              </DropdownMenuItem>
+                              </DropdownMenuItem> */}
                               <DropdownMenuItem 
                                 className="text-red-600"
                                 onClick={() => deleteProject(project.id)}
@@ -498,10 +509,10 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4">
                     Tente ajustar os filtros ou criar um novo projeto.
                   </p>
-                  <Button onClick={() => setIsCreateProjectOpen(true)}>
+                  {/* <Button onClick={() => setIsCreateProjectOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Novo Projeto
-                  </Button>
+                  </Button> */}
                 </div>
               )}
             </div>
