@@ -267,14 +267,14 @@ const Dashboard = () => {
         
         <SidebarInset className="flex-1">
           {/* Header Mobile */}
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+          <header className="flex h-14 items-center shrink-0 items-center gap-2 border-b px-4 md:hidden">
             <SidebarTrigger />
             <div className="flex items-center gap-2 flex-1">
               <Building className="h-5 w-5 text-blue-600" />
               <h1 className="text-lg font-semibold truncate">{currentCompany.name}</h1>
             </div>
             <div className="flex gap-1">
-              {/* mudar o tema Dark/Light */}
+              {/* Dark/Light */}
               <ThemeToggle />
               <HelpDialog trigger={
                 <Button variant="outline" size="sm">
@@ -287,8 +287,7 @@ const Dashboard = () => {
               </Button>
 
               <CreateProjectDialog onCreateProject={handleCreateProject}/>
-
-
+              
               {/* Botão mobile */} 
               {/* <Button className="bg-blue-500 hover:bg-blue-700" onClick={() => setIsCreateProjectOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
@@ -515,7 +514,7 @@ const Dashboard = () => {
                   {/* <Button onClick={() => setIsCreateProjectOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Novo Projeto
-                  </Button> */}
+                  </Button>  */}
                 </div>
               )}
             </div>
