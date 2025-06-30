@@ -280,7 +280,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
         return (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="justify-start font-normal border-0 bg-transparent hover:bg-gray-50">
+              <Button variant="ghost" className="justify-start font-normal border-0 bg-transparent hover:bg-gray-40">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {value ? format(new Date(value), 'dd/MM/yyyy', { locale: ptBR }) : 'Selecionar data'}
               </Button>
@@ -303,9 +303,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
               <SelectValue placeholder="Atribuir" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="user1">João Silva</SelectItem>
-              <SelectItem value="user2">Maria Santos</SelectItem>
-              <SelectItem value="user3">Pedro Costa</SelectItem>
+              <SelectItem value="user1">Exemplo</SelectItem>
             </SelectContent>
           </Select>
         );
