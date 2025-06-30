@@ -38,7 +38,7 @@ const Index = () => {
       name: "João Santos",
       role: "CEO",
       company: "StartupX",
-      content: "Migramos do Monday.com para o Thursday e não nos arrependemos. Muito mais flexível e eficiente.",
+      content: "O Thursday é muito flexível e eficiente.",
       rating: 5
     },
     {
@@ -112,11 +112,11 @@ const Index = () => {
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-white-900 mb-6">
               Gerencie seus projetos com
               <span className="text-blue-600 block">Thursday</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-white-600 mb-8 max-w-3xl mx-auto">
               A plataforma de gerenciamento de projetos que sua equipe precisa. 
               Colaboração em tempo real, múltiplas visualizações e controle total sobre seus projetos.
             </p>
@@ -127,7 +127,7 @@ const Index = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg">
+              <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-10 px-8 py-3 text-lg">
                 Ver Demonstração
               </Button>
             </div>
@@ -173,23 +173,33 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                  <span>Convites por email com controle de permissões</span>
+                  <span className="text-gray-800 dark:text-blue-700">
+                    Convites por email com controle de permissões
+                    </span>
+                </div>
+                
+                <div className="flex items-center">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 text-gray" />
+                  <span className="text-gray-800 dark:text-blue-700">
+                    Múltiplas empresas em uma conta
+                    </span>
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                  <span>Múltiplas empresas em uma conta</span>
+                  <span className="text-gray-800 dark:text-blue-700">
+                    Tipos de coluna personalizáveis
+                    </span>
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                  <span>Tipos de coluna personalizáveis</span>
+                  <span className="text-gray-800 dark:text-blue-700">
+                    Salvamento automático</span>
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                  <span>Salvamento automático</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                  <span>Busca e filtros avançados</span>
+                  <span className="text-gray-800 dark:text-blue-700">
+                    Busca e filtros avançados
+                    </span>
                 </div>
               </div>
             </div>
@@ -273,7 +283,7 @@ const Index = () => {
             </p>
             <div className="border-t border-gray-800 pt-8">
               <p className="text-gray-400">
-                © 2024 Thursday. Todos os direitos reservados.
+                © 2025 Thursday. Todos os direitos reservados.
               </p>
             </div>
           </div>

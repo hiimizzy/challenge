@@ -57,9 +57,9 @@ const CreateProjectDialog = ({ onCreateProject }: CreateProjectDialogProps) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-blue-400 hover:bg-blue-800">
-          <Plus className="flex h-2 w-3 mr-2" />
+          <Plus className="h-2 w-3 mr-2" />
           New
-        </Button>
+        </Button> 
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

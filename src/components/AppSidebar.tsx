@@ -1,10 +1,10 @@
 
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Home, 
-  FolderKanban, 
-  Users, 
+import {
+  Home,
+  FolderKanban,
+  Users,
   LogOut,
   Plus,
   User,
@@ -64,11 +64,11 @@ const mainNavItems = [
   { title: 'Projetos', url: '/dashboard', icon: FolderKanban },
 ];
 
-export function AppSidebar({ 
-  currentCompany, 
-  profileImage, 
-  onProfileImageChange, 
-  projects, 
+export function AppSidebar({
+  currentCompany,
+  profileImage,
+  onProfileImageChange,
+  projects,
   onCreateProject,
   companies,
   onCompanyChange,
@@ -79,15 +79,15 @@ export function AppSidebar({
   const navigate = useNavigate();
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
-  
+
   const isCollapsed = state === 'collapsed' && !isMobile;
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path;
 
   return (
-    <Sidebar 
-      className={isCollapsed ? "w-14" : "w-64"} 
+    <Sidebar
+      className={isCollapsed ? "w-14" : "w-64"}
       collapsible={isMobile ? "offcanvas" : "icon"}
     >
       <SidebarHeader className="p-4">
@@ -96,7 +96,7 @@ export function AppSidebar({
             <div className="flex items-center space-x-2">
               <div className="text-xl font-bold text-blue-600">Thursday</div>
             </div>
-            
+
             {/* Company Selector */}
             <CompanySelector
               companies={companies}
@@ -116,8 +116,8 @@ export function AppSidebar({
             <SidebarMenu>
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
+                  <SidebarMenuButton
+                    asChild
                     isActive={isActive(item.url)}
                     tooltip={isCollapsed ? item.title : undefined}
                   >
@@ -141,11 +141,11 @@ export function AppSidebar({
             <SidebarMenu>
               {projects.slice(0, 3).map((project) => (
                 <SidebarMenuItem key={project.id}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     asChild
                     tooltip={isCollapsed ? project.name : undefined}
                   >
-                    <NavLink 
+                    <NavLink
                       to={`/project/${project.id}`}
                       className="flex items-center"
                     >
@@ -161,7 +161,7 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Ações Rápidas - Apenas Mobile - Somente Convidar Membros */}
+        {/* Ações Rápidas - Mobile */}
         {isMobile && (
           <>
             <Separator className="my-2" />
@@ -202,24 +202,23 @@ export function AppSidebar({
             </div>
           )}
 
-          {/* Botão Sair - Apenas Mobile */}
-          {isMobile && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="w-full text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </Button>
-          )}
+          {/* Botão Sair */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="w-full text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            {!isCollapsed && "Sair"}
+          </Button>
+
         </div>
       </SidebarFooter>
 
       {/* Diálogos - Apenas Mobile - Sem CreateProjectDialog */}
       {isMobile && (
-        <InviteMembersDialog 
+        <InviteMembersDialog
           open={isInviteOpen}
           onOpenChange={setIsInviteOpen}
         />

@@ -108,7 +108,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
     const updatedColumns = columns.filter(col => col.id !== columnId);
     const updatedItems = items.map(item => {
       const { [columnId]: removed, ...rest } = item;
-      return rest as Item; // Explicitly cast to maintain Item type
+      return rest as Item; 
     });
 
     // Atualização otimista
@@ -457,9 +457,9 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
             </TableHeader>
             <TableBody>
               {items.map((item, index) => (
-                <TableRow key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
+                <TableRow key={item.id} className={index % 2 === 0 ? 'bg-gray-60/60' : 'bg-gray-50/50'}>
                   <TableCell className="p-2">
-                    <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 cursor-move" />
+                    <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-black-400 cursor-move" />
                   </TableCell>
                   {columns.map((column) => (
                     <TableCell key={column.id} className="p-2">

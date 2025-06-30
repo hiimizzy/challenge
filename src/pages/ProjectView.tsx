@@ -165,7 +165,7 @@ const ProjectView = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="max-w-7xl mx-auto">
         <BoardView project={project} onUpdateProject={handleUpdateProject} />
       </main>

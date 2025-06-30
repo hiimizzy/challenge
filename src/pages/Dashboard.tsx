@@ -249,6 +249,7 @@ const Dashboard = () => {
     }
   };
 
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -262,6 +263,7 @@ const Dashboard = () => {
           onCompanyChange={handleCompanyChange}
           onCreateCompany={handleCreateCompany}
         />
+
         
         <SidebarInset className="flex-1">
           {/* Header Mobile */}
@@ -287,11 +289,11 @@ const Dashboard = () => {
               <CreateProjectDialog onCreateProject={handleCreateProject}/>
 
 
-              {/* botão de criar novo projeto reduzido */}
-              {/* <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="h-4 w-4 mr-2" />
-          New
-        </Button> */}
+              {/* Botão mobile */} 
+              {/* <Button className="bg-blue-500 hover:bg-blue-700" onClick={() => setIsCreateProjectOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              New
+              </Button> */}
             </div>
           </header>
 
@@ -312,10 +314,11 @@ const Dashboard = () => {
                   Convidar
                 </Button>
                 
-                {/* <Button onClick={() => setIsCreateProjectOpen(true)}>
+                <Button onClick={() => setIsCreateProjectOpen(true)}>
                   <Plus className="h-4 w-3 mr-2" />
                   New
-                </Button> */}
+                </Button>  
+                
               </div>
             </div>
 
@@ -520,11 +523,6 @@ const Dashboard = () => {
         </SidebarInset>
       </div>
 
-      {/* Diálogos */}
-      <CreateProjectDialog 
-        onCreateProject={handleCreateProject}
-      />
-      
       <InviteMembersDialog 
         open={isInviteOpen}
         onOpenChange={setIsInviteOpen}
