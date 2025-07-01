@@ -268,16 +268,16 @@ const Dashboard = () => {
         <SidebarInset className="flex-1">
           {/* Header Mobile */}
           <header className="flex h-14 items-center shrink-0 items-center gap-2 border-b px-4 md:hidden">
-            <SidebarTrigger />
+            <SidebarTrigger className="h-8 w-8" />
             <div className="flex items-center gap-2 flex-1">
-              <Building className="h-5 w-5 text-blue-600" />
-              <h1 className="text-lg font-semibold truncate">{currentCompany.name}</h1>
+              <Building className="h-4 w-4 text-blue-600  flex-shrink-0" />
+              <h1 className="text-base font-semibold truncate">{currentCompany.name}</h1>
             </div>
             <div className="flex gap-1">
               {/* Dark/Light */}
               <ThemeToggle />
               <HelpDialog trigger={
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
                   <CircleHelp className="h-4 w-4" />
                 </Button>
               } />

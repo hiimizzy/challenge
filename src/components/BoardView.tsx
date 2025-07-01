@@ -337,8 +337,9 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
               <div className="flex items-center gap-1 text-xs text-green-600">
                 <Wifi className="h-3 w-3" />
                 Sincronizado
-              </div>
-            )}
+              </div> 
+            ) 
+            }
           </div>
           <p className="text-sm sm:text-base text-gray-600">{project.description}</p>
           <p className="text-xs text-gray-500">
@@ -347,6 +348,8 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
           </p>
         </div>
         
+            {/* new item */}
+
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           {permissions.canEdit && (
             <Button onClick={addItem} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
@@ -457,7 +460,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
               {items.map((item, index) => (
                 <TableRow key={item.id} className={index % 2 === 0 ? 'bg-gray-60/60' : 'bg-gray-50/50'}>
                   <TableCell className="p-2">
-                    <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-black-400 cursor-move" />
+                    <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 cursor-move" />
                   </TableCell>
                   {columns.map((column) => (
                     <TableCell key={column.id} className="p-2">
