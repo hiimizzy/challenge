@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -14,6 +14,7 @@ import { ptBR } from 'date-fns/locale';
 import { useOptimisticUpdates } from '@/hooks/useOptimisticUpdates';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { usePermissions, UserRole } from '@/hooks/usePermissions';
+import { useSocketSync } from '@/hooks/useSocketSync';
 
 interface Column {
   id: string;
@@ -41,26 +42,53 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
   const [newColumnType, setNewColumnType] = useState<Column['type']>('text');
   const [newColumnOptions, setNewColumnOptions] = useState('');
 
-  // Simulando usuário atual - em uma app real viria do contexto/auth
-  const currentUser = {
-    id: 'user1',
-    role: 'admin' as UserRole,
-    companyId: 'company1'
-  };
-
-  const permissions = usePermissions(currentUser);
+  // Usar permissões
+  const { permissions, isLoading: permissionsLoading, user } = usePermissions(project.companyId);
   const { addOptimisticAction, hasPendingActions } = useOptimisticUpdates();
 
-  // Auto-save quando dados mudam
-  const saveProjectData = useCallback((data: any) => {
-    console.log('Auto-salvando projeto...', data);
-    onUpdateProject(data);
-  }, [onUpdateProject]);
+  // Sincronização em tempo real com Socket.io
+  const { isConnected } = useSocketSync({
+    room: `project-${project.id}`,
+    entityType: 'project',
+    entityId: project.id,
+    onUpdate: (data) => {
+      console.log('📡 Projeto atualizado via Socket.io:', data);
+      // Recarregar dados do projeto quando houver atualizações
+      if (data.event === 'UPDATE') {
+        // Atualizar estado local com dados do servidor
+        if (data.data.columns) setColumns(data.data.columns);
+        if (data.data.items) setItems(data.data.items);
+      }
+    },
+    onError: (error) => {
+      console.error('❌ Erro na sincronização via Socket.io:', error);
+    }
+  });
+
+  // Auto-save simulado (substitua pela sua API)
+  const saveProjectData = useCallback(async (data: any) => {
+    if (!user) return;
+    
+    try {
+      console.log('💾 Salvando projeto via API...', data);
+      
+      // Simular chamada para API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('✅ Projeto salvo com sucesso');
+      onUpdateProject({ ...project, ...data });
+      
+    } catch (error) {
+      console.error('❌ Erro ao salvar projeto:', error);
+      throw error;
+    }
+  }, [project, onUpdateProject, user]);
 
   useAutoSave({ columns, items }, saveProjectData, 1500);
 
-  const addColumn = () => {
-    if (!permissions.canCreateColumns) {
+  // Verificar permissões antes de executar ações
+  const addColumn = async () => {
+    if (!permissions.canCreateColumns || permissionsLoading) {
       alert('Você não tem permissão para criar colunas');
       return;
     }
@@ -89,7 +117,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
         rollback: () => setColumns(previousColumns)
       });
 
-      updateProject({ columns: updatedColumns });
+      await saveProjectData({ columns: updatedColumns, items });
       setNewColumnName('');
       setNewColumnType('text');
       setNewColumnOptions('');
@@ -97,8 +125,8 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
     }
   };
 
-  const deleteColumn = (columnId: string) => {
-    if (!permissions.canDeleteColumns) {
+  const deleteColumn = async (columnId: string) => {
+    if (!permissions.canDeleteColumns || permissionsLoading) {
       alert('Você não tem permissão para deletar colunas');
       return;
     }
@@ -108,7 +136,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
     const updatedColumns = columns.filter(col => col.id !== columnId);
     const updatedItems = items.map(item => {
       const { [columnId]: removed, ...rest } = item;
-      return rest as Item; 
+      return rest as Item;
     });
 
     // Atualização otimista
@@ -125,18 +153,20 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
       }
     });
 
-    updateProject({ columns: updatedColumns, items: updatedItems });
+    await saveProjectData({ columns: updatedColumns, items: updatedItems });
   };
 
-  const addItem = () => {
-    if (!permissions.canEdit) {
+  const addItem = async () => {
+    if (!permissions.canEdit || permissionsLoading) {
       alert('Você não tem permissão para adicionar itens');
       return;
     }
 
     const newItem: Item = {
       id: Date.now().toString(),
-      [columns[0]?.id || '1']: `Item ${items.length + 1}`
+      [columns[0]?.id || '1']: `Item ${items.length + 1}`,
+      created_by: user?.id,
+      created_at: new Date().toISOString()
     };
 
     const previousItems = [...items];
@@ -152,17 +182,22 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
       rollback: () => setItems(previousItems)
     });
 
-    updateProject({ items: updatedItems, tasks: updatedItems.length });
+    await saveProjectData({ columns, items: updatedItems });
   };
 
-  const updateItem = (itemId: string, columnId: string, value: any) => {
-    if (!permissions.canEdit) {
+  const updateItem = async (itemId: string, columnId: string, value: any) => {
+    if (!permissions.canEdit || permissionsLoading) {
       return;
     }
 
     const previousItems = [...items];
     const updatedItems = items.map(item => 
-      item.id === itemId ? { ...item, [columnId]: value } : item
+      item.id === itemId ? { 
+        ...item, 
+        [columnId]: value,
+        updated_at: new Date().toISOString(),
+        updated_by: user?.id
+      } : item
     );
     
     // Atualização otimista
@@ -175,11 +210,11 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
       rollback: () => setItems(previousItems)
     });
 
-    updateProject({ items: updatedItems });
+    // Salvar com debounce através do useAutoSave
   };
 
-  const deleteItem = (itemId: string) => {
-    if (!permissions.canDelete) {
+  const deleteItem = async (itemId: string) => {
+    if (!permissions.canDelete || permissionsLoading) {
       alert('Você não tem permissão para deletar itens');
       return;
     }
@@ -197,7 +232,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
       rollback: () => setItems(previousItems)
     });
 
-    updateProject({ items: updatedItems, tasks: updatedItems.length });
+    await saveProjectData({ columns, items: updatedItems });
   };
 
   const updateProject = (updates: any) => {
@@ -205,6 +240,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
     onUpdateProject(updatedProject);
   };
 
+  // Renderizar conteúdo da célula com base no tipo da coluna
   const renderCellContent = (item: Item, column: Column) => {
     const value = item[column.id];
 
@@ -280,7 +316,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
         return (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="justify-start font-normal border-0 bg-transparent hover:bg-gray-40">
+              <Button variant="ghost" className="justify-start font-normal border-0 bg-transparent hover:bg-gray-50">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {value ? format(new Date(value), 'dd/MM/yyyy', { locale: ptBR }) : 'Selecionar data'}
               </Button>
@@ -303,7 +339,9 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
               <SelectValue placeholder="Atribuir" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="user1">Exemplo</SelectItem>
+              <SelectItem value="user1">João Silva</SelectItem>
+              <SelectItem value="user2">Maria Santos</SelectItem>
+              <SelectItem value="user3">Pedro Costa</SelectItem>
             </SelectContent>
           </Select>
         );
@@ -321,6 +359,15 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
     }
   };
 
+  if (permissionsLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2">Carregando permissões...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header com status de sync */}
@@ -333,23 +380,26 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
                 <Save className="h-3 w-3 animate-pulse" />
                 Salvando...
               </div>
-            ) : (
+            ) : isConnected ? (
               <div className="flex items-center gap-1 text-xs text-green-600">
                 <Wifi className="h-3 w-3" />
-                Sincronizado
-              </div> 
-            ) 
-            }
+                Socket.io Conectado
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-xs text-red-600">
+                <WifiOff className="h-3 w-3" />
+                Socket.io Desconectado
+              </div>
+            )}
           </div>
           <p className="text-sm sm:text-base text-gray-600">{project.description}</p>
           <p className="text-xs text-gray-500">
             Permissões: {permissions.canEdit ? 'Editor' : 'Visualizador'} • 
-            {permissions.canDelete ? ' Pode deletar' : ' Somente leitura'}
+            {permissions.canDelete ? ' Pode deletar' : ' Somente leitura'} •
+            Usuário: {user?.email}
           </p>
         </div>
         
-            {/* new item */}
-
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           {permissions.canEdit && (
             <Button onClick={addItem} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
@@ -458,7 +508,7 @@ const BoardView = ({ project, onUpdateProject }: BoardViewProps) => {
             </TableHeader>
             <TableBody>
               {items.map((item, index) => (
-                <TableRow key={item.id} className={index % 2 === 0 ? 'bg-gray-60/60' : 'bg-gray-50/50'}>
+                <TableRow key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
                   <TableCell className="p-2">
                     <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 cursor-move" />
                   </TableCell>

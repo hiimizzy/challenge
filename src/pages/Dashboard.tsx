@@ -313,10 +313,7 @@ const Dashboard = () => {
                   Convidar
                 </Button>
                 
-                <Button onClick={() => setIsCreateProjectOpen(true)}>
-                  <Plus className="h-4 w-3 mr-2" />
-                  New
-                </Button>  
+                <CreateProjectDialog onCreateProject={handleCreateProject}/> 
                 
               </div>
             </div>
@@ -521,6 +518,8 @@ const Dashboard = () => {
           </div>
         </SidebarInset>
       </div>
+
+
 
       <InviteMembersDialog 
         open={isInviteOpen}
